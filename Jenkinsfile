@@ -1,46 +1,46 @@
 pipeline {
-agent any
+  agent any
 
-options {
-timestamps()
-}
+    options {
+      timestamps()
+    }
 
-stages {
-stage('Checkout') {
-steps {
-checkout scm
-}
-}
-stage('Setup') {
-steps {
-sh 'python3 -m venv venv'
-sh './venv/bin/pip install --upgrade pip'
-sh './venv/bin/pip install -r requirements.txt'
-}
-}
+    stages {
+      stage('Checkout') {
+        steps {
+          checkout scm
+        }
+      }
+      stage('Setup') {
+        steps {
+          sh 'python3 -m venv venv'
+          sh './venv/bin/pip install --upgrade pip'
+          sh './venv/bin/pip install -r requirements.txt'
+        }
+      }
 
-stage('Build') {
-steps {
-sh './venv/bin/python -m py_compile app.py'
-}
-}
+      stage('Build') {
+        steps {
+          sh './venv/bin/python -m py_compile app.py'
+        }
+      }
 
-stage('Test') {
-steps {
-sh './venv/bin/pytest --junitxml=result.xml'
-}
-}
-}
+      stage('Test') {
+        steps {
+          sh './venv/bin/pytest --junitxml=result.xml'
+        }
+      }
+    }
 
-post {
-always {
-junit 'result.xml'
-}
-success {
-echo 'Build completed'
-}
-failure {
-echo 'fail'
-}
-}
+    post {
+      always {
+        junit 'result.xml'
+      }
+    success {
+      echo 'Build completed'
+    }
+    failure {
+      echo 'fail'
+    }
+  }
 }
